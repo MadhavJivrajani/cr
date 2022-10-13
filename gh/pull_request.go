@@ -18,11 +18,8 @@ package gh
 
 import (
 	"context"
-	"fmt"
-	"os"
 
 	"github.com/google/go-github/v43/github"
-	"golang.org/x/oauth2"
 )
 
 const (
@@ -40,7 +37,7 @@ type RelevantPullRequests struct {
 }
 
 func GetRelevantPullRequests(ctx context.Context, prNum int) (*RelevantPullRequests, error) {
-	client, err := newGithubClient(ctx)
+	client, err := NewGithubClient(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -103,19 +100,6 @@ func GetRelevantPullRequests(ctx context.Context, prNum int) (*RelevantPullReque
 	}
 
 	return result, nil
-}
-
-func newGithubClient(ctx context.Context) (*github.Client, error) {
-	token, ok := os.LookupEnv("GITHUB_TOKEN")
-	if !ok {
-		return nil, fmt.Errorf("unable to look GITHUB_TOKEN env variable")
-	}
-	ts := oauth2.StaticTokenSource(
-		&oauth2.Token{AccessToken: token},
-	)
-	tc := oauth2.NewClient(ctx, ts)
-
-	return github.NewClient(tc), nil
 }
 
 func filterPRs(prs []*github.PullRequest) []*github.PullRequest {
