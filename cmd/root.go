@@ -51,7 +51,7 @@ func processPR(ctx context.Context, opts Options) error {
 		return err
 	}
 
-	printer.PrettyDisplay(result)
+	printer.PrettyDisplayPRs(result)
 	return nil
 }
 

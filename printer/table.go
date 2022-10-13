@@ -27,7 +27,7 @@ import (
 	"github.com/olekukonko/tablewriter"
 )
 
-func PrettyDisplay(result *gh.RelevantPullRequests) {
+func PrettyDisplayPRs(result *gh.RelevantPullRequests) {
 	sort.Slice(result.PRs, func(i, j int) bool {
 		var iPriority, jPriority int
 		for _, label := range result.PRs[i].Labels {
@@ -75,6 +75,23 @@ func PrettyDisplay(result *gh.RelevantPullRequests) {
 			getPriorityLabelString(pr.Labels),
 			fmt.Sprintf("%d", result.NumFilesMatched[*pr.Number]),
 		}
+		table.Append(row)
+	}
+
+	table.Render()
+}
+
+func PrettyDisplayIssues(result map[string]int) {
+	table := tablewriter.NewWriter(os.Stdout)
+	table.SetHeader([]string{"SIG", "No. of Triaged Bugs"})
+	table.SetCaption(
+		true,
+		"Issues with triage/accepted + kind/bug broken down by SIGs",
+	)
+	table.SetRowLine(true)
+
+	for sig, num := range result {
+		row := []string{sig, fmt.Sprintf("%d", num)}
 		table.Append(row)
 	}
 
